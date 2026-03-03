@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>nox dev — Documentation</title>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4/dist/full.min.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+  <style>
+    body { margin: 0; padding: 0; }
+    /* Smooth scrollbar for sidebar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: hsl(var(--bc) / 0.2); border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+
+    
+// Lucide Icon Components
+const createIcon = (svgContent) => {
+  return ({size = 24, className = ''}) => {
+    return React.createElement('svg', {
+      xmlns: 'http://www.w3.org/2000/svg',
+      width: size,
+      height: size,
+      viewBox: '0 0 24 24',
+      fill: 'none',
+      stroke: 'currentColor',
+      strokeWidth: 2,
+      strokeLinecap: 'round',
+      strokeLinejoin: 'round',
+      className: className,
+      dangerouslySetInnerHTML: {__html: svgContent}
+    });
+  };
+};
+const ChevronDown = createIcon('<polyline points="6 9 12 15 18 9"></polyline>');
+const ChevronRight = createIcon('<polyline points="9 18 15 12 9 6"></polyline>');
+const Book = createIcon('<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>');
+const Home = createIcon('<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>');
+const Globe = createIcon('<circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>');
+const Shield = createIcon('<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>');
+const Terminal = createIcon('<polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line>');
+const Settings = createIcon('<circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>');
+const MessageSquare = createIcon('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>');
+const Skull = createIcon('<circle cx="9" cy="12" r="1"></circle><circle cx="15" cy="12" r="1"></circle><path d="M8 20v2h8v-2"></path><path d="m12.5 17-.5-1-.5 1h1z"></path><path d="M16 20a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20"></path>');
+const Zap = createIcon('<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>');
+const Users = createIcon('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>');
+const Copy = createIcon('<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>');
+const Check = createIcon('<polyline points="20 6 9 17 4 12"></polyline>');
+const Lock = createIcon('<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>');
+const Unlock = createIcon('<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path>');
+const Heart = createIcon('<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>');
+const AlertTriangle = createIcon('<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line>');
+const RefreshCw = createIcon('<polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>');
+const Database = createIcon('<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>');
+const ArrowRight = createIcon('<line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>');
+
+
+    /* ===== CodeBlock Components ===== */
+    
+
+window.CodeBlock = ({ code, language = 'lua', title }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  return (
+    <div className="rounded-lg overflow-hidden bg-base-300 my-3">
+      {title && (
+        <div className="flex items-center justify-between px-4 py-2 bg-base-300 border-b border-base-content/10">
+          <span className="text-xs font-mono text-base-content/50">{title}</span>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] badge badge-sm badge-ghost">{language}</span>
+            <button onClick={handleCopy} className="btn btn-ghost btn-xs">
+              {copied ? <Check size={12} className="text-success" /> : <Copy size={12} className="opacity-50" />}
+            </button>
+          </div>
+        </div>
+      )}
+      {!title && (
+        <div className="flex justify-end px-3 py-1">
+          <button onClick={handleCopy} className="btn btn-ghost btn-xs">
+            {copied ? <Check size={12} className="text-success" /> : <Copy size={12} className="opacity-50" />}
+          </button>
+        </div>
+      )}
+      <pre className="px-4 py-3 overflow-x-auto text-sm">
+        <code className="text-base-content/80 font-mono text-xs leading-relaxed whitespace-pre">{code}</code>
+      </pre>
+    </div>
+  );
+};
+
+[];
+}
+
+window.ConfigTable = ({ options }) => (
+  <div className="overflow-x-auto my-4">
+    <table className="table table-zebra table-sm">
+      <thead>
+        <tr>
+          <th className="text-base-content/60">Option</th>
+          <th className="text-base-content/60">Type</th>
+          <th className="text-base-content/60">Default</th>
+          <th className="text-base-content/60">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {options.map((opt) => (
+          <tr key={opt.name}>
+            <td><code className="text-primary text-xs">{opt.name}</code></td>
+            <td><span className="badge badge-sm badge-ghost">{opt.type}</span></td>
+            <td><code className="text-xs text-base-content/60">{opt.default}</code></td>
+            <td className="text-sm text-base-content/70">{opt.description}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
+
+[];
+}
+
+window.CommandTable = ({ commands }) => (
+  <div className="overflow-x-auto my-4">
+    <table className="table table-zebra table-sm">
+      <thead>
+        <tr>
+          <th className="text-base-content/60">Command</th>
+          <th className="text-base-content/60">Description</th>
+          <th className="text-base-content/60">Usage</th>
+          <th className="text-base-content/60">Permission</th>
+        </tr>
+      </thead>
+      <tbody>
+        {commands.map((cmd) => (
+          <tr key={cmd.name}>
+            <td><code className="text-primary text-xs">{cmd.name}</code></td>
+            <td className="text-sm text-base-content/70">{cmd.description}</td>
+            <td><code className="text-xs text-base-content/60">{cmd.usage}</code></td>
+            <td><span className="badge badge-sm badge-warning">{cmd.permission || 'admin'}</span></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
+
+  </script>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+    const { CodeBlock, ConfigTable, CommandTable } = window;
+    /* ===== DwCommandsPage ===== */
+    
+
+const commands = [
+  { name: '/checkdeaths', description: 'Check a player\'s current death count.', usage: '/checkdeaths [server_id]', permission: 'admin' },
+  { name: '/resetdeaths', description: 'Reset a specific player\'s death count to 0.', usage: '/resetdeaths [server_id]', permission: 'admin' },
+  { name: '/resetalldeaths', description: 'Reset ALL players\' death counts to 0 server-wide.', usage: '/resetalldeaths', permission: 'admin' },
+  { name: '/testwipe', description: 'Test wipe a player\'s character (triggers the full wipe process).', usage: '/testwipe [server_id]', permission: 'admin' },
+  { name: '/wipelist', description: 'Show all players currently marked for re-wipe.', usage: '/wipelist', permission: 'admin' },
+  { name: '/deathleaderboard', description: 'Show the top players by death count.', usage: '/deathleaderboard', permission: 'admin' },
+];
+
+window.DwCommandsPage = () => {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-base-content mb-2">death_wipe — Admin Commands</h1>
+        <p className="text-base-content/60">
+          Built-in admin commands for managing player death counts and character wipes.
+        </p>
+      </div>
+
+      {/* Command Table */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Commands Reference</h2>
+          <CommandTable commands={commands} />
+        </div>
+      </div>
+
+      {/* Command Details */}
+      <div>
+        <h2 className="text-xl font-bold text-base-content mb-4">Command Details</h2>
+        <div className="space-y-4">
+          <div className="card bg-base-200">
+            <div className="card-body">
+              <h3 className="font-bold text-base-content"><code className="text-primary">/checkdeaths [server_id]</code></h3>
+              <p className="text-sm text-base-content/60 mt-1">
+                Displays the current death count for the specified player. The server ID is the player's
+                in-game ID (visible in the player list). Output is shown only to the admin running the command.
+              </p>
+            </div>
+          </div>
+
+          <div className="card bg-base-200">
+            <div className="card-body">
+              <h3 className="font-bold text-base-content"><code className="text-primary">/resetdeaths [server_id]</code></h3>
+              <p className="text-sm text-base-content/60 mt-1">
+                Resets a specific player's death count back to 0. Useful for giving players a second chance
+                or resolving issues caused by bugs or unfair deaths.
+              </p>
+            </div>
+          </div>
+
+          <div className="card bg-base-200">
+            <div className="card-body">
+              <h3 className="font-bold text-base-content"><code className="text-primary">/resetalldeaths</code></h3>
+              <p className="text-sm text-base-content/60 mt-1">
+                Resets death counts for <strong>all players</strong> to 0. Use with caution — this affects
+                every player in the database. Useful for server-wide resets or new seasons.
+              </p>
+              <div className="alert alert-warning mt-2">
+                <p className="text-xs">This action cannot be undone. Consider backing up your database first.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="card bg-base-200">
+            <div className="card-body">
+              <h3 className="font-bold text-base-content"><code className="text-primary">/testwipe [server_id]</code></h3>
+              <p className="text-sm text-base-content/60 mt-1">
+                Triggers a full character wipe for the specified player. This is identical to what happens
+                when a player reaches max deaths — their character data is permanently deleted. Useful for
+                testing your setup or manually removing a character.
+              </p>
+              <div className="alert alert-error mt-2">
+                <p className="text-xs"><strong>Warning:</strong> This permanently deletes the player's character. Use only for testing or when absolutely necessary.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="card bg-base-200">
+            <div className="card-body">
+              <h3 className="font-bold text-base-content"><code className="text-primary">/wipelist</code></h3>
+              <p className="text-sm text-base-content/60 mt-1">
+                Displays all players currently in the <code className="text-primary text-xs">death_wipe_marked</code> table —
+                those flagged for re-wipe on their next connection. Useful for monitoring the mark-and-rewipe system.
+              </p>
+            </div>
+          </div>
+
+          <div className="card bg-base-200">
+            <div className="card-body">
+              <h3 className="font-bold text-base-content"><code className="text-primary">/deathleaderboard</code></h3>
+              <p className="text-sm text-base-content/60 mt-1">
+                Shows the players with the highest death counts. Useful for monitoring which players are
+                closest to being wiped or for fun community engagement.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="alert alert-info">
+        <p className="text-sm">
+          <strong>Permissions:</strong> All commands require admin privileges. Permission checks use your
+          framework's built-in admin/permission system.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+  </script>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+    const { CodeBlock, ConfigTable, CommandTable } = window;
+    /* ===== DwConfigPage ===== */
+    
+
+const configOptions = [
+  { name: 'MaxDeaths', type: 'number', default: '5', description: 'Number of deaths before the character is permanently wiped.' },
+  { name: 'ShowDeathCount', type: 'boolean', default: 'true', description: 'Show the player their current death count and remaining lives after each death.' },
+  { name: 'ForceFramework', type: 'string', default: "''", description: "Force a specific framework instead of auto-detection. Values: 'qbcore', 'esx', 'vorpcore', 'nd_core', or '' for auto." },
+  { name: 'Locale', type: 'string', default: "'en'", description: 'Language code for in-game messages. See Locales page for supported codes.' },
+  { name: 'DiscordEnabled', type: 'boolean', default: 'true', description: 'Enable or disable Discord webhook notifications.' },
+  { name: 'DiscordWebhook', type: 'string', default: "''", description: 'Discord webhook URL for death/wipe notifications.' },
+  { name: 'DiscordBotName', type: 'string', default: "'Death Wipe'", description: 'Display name for the Discord webhook bot.' },
+  { name: 'DiscordBotAvatar', type: 'string', default: "''", description: 'Avatar image URL for the Discord webhook bot.' },
+  { name: 'NotifyOnDeath', type: 'boolean', default: 'true', description: 'Send a Discord notification each time a player dies.' },
+  { name: 'NotifyOnLastLife', type: 'boolean', default: 'true', description: 'Send a Discord notification when a player reaches their last life.' },
+  { name: 'NotifyOnWipe', type: 'boolean', default: 'true', description: 'Send a Discord notification when a character is wiped.' },
+  { name: 'VersionCheckURL', type: 'string', default: "''", description: 'URL to check for script updates. Leave empty to disable version checking.' },
+];
+
+window.DwConfigPage = () => {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-base-content mb-2">death_wipe — Configuration</h1>
+        <p className="text-base-content/60">
+          Complete reference for all <code className="text-primary text-xs">config.lua</code> options in death_wipe v4.0.
+        </p>
+      </div>
+
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Config Options</h2>
+          <ConfigTable options={configOptions} />
+        </div>
+      </div>
+
+      <div className="alert alert-info">
+        <p className="text-sm">
+          <strong>Tip:</strong> Use the individual notification toggles (<code>NotifyOnDeath</code>, <code>NotifyOnLastLife</code>, <code>NotifyOnWipe</code>)
+          to control exactly which events send Discord notifications. This is useful on busy servers to reduce webhook spam.
+        </p>
+      </div>
+
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Example Configuration</h2>
+          <p className="text-sm text-base-content/60 mt-1">
+            A hardcore setup with 3 lives and all notifications enabled:
+          </p>
+          <div className="mt-3 bg-base-300 rounded-lg p-4">
+            <pre className="text-xs text-base-content/80 font-mono whitespace-pre">{`Config = {}
+
+Config.MaxDeaths = 3                 -- Only 3 lives!
+Config.ShowDeathCount = true
+Config.ForceFramework = ''
+Config.Locale = 'en'
+
+Config.DiscordEnabled = true
+Config.DiscordWebhook = 'https://discord.com/api/webhooks/...'
+Config.DiscordBotName = 'Death Wipe'
+Config.DiscordBotAvatar = ''
+
+Config.NotifyOnDeath = true
+Config.NotifyOnLastLife = true
+Config.NotifyOnWipe = true
+
+Config.VersionCheckURL = ''`}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+  </script>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+    const { CodeBlock, ConfigTable, CommandTable } = window;
+    /* ===== DwDiscordPage ===== */
+    
+
+
+window.DwDiscordPage = () => {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-base-content mb-2">death_wipe — Discord Integration</h1>
+        <p className="text-base-content/60">
+          Set up Discord webhook notifications for death tracking and character wipe events.
+        </p>
+      </div>
+
+      {/* Setup */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content flex items-center gap-2">
+            <MessageSquare size={20} className="text-primary" /> Webhook Setup
+          </h2>
+          <div className="mt-3 space-y-4">
+            <div className="flex gap-3">
+              <div className="badge badge-primary badge-lg shrink-0">1</div>
+              <p className="text-sm text-base-content/70">Open your Discord server and go to <strong>Server Settings → Integrations → Webhooks</strong>.</p>
+            </div>
+            <div className="flex gap-3">
+              <div className="badge badge-primary badge-lg shrink-0">2</div>
+              <p className="text-sm text-base-content/70">Click <strong>New Webhook</strong>, choose a channel for death notifications, and copy the webhook URL.</p>
+            </div>
+            <div className="flex gap-3">
+              <div className="badge badge-primary badge-lg shrink-0">3</div>
+              <p className="text-sm text-base-content/70">Paste the URL into your <code className="text-primary text-xs">config.lua</code>:</p>
+            </div>
+          </div>
+          <CodeBlock language="lua" title="config.lua" code={`Config.DiscordEnabled = true
+Config.DiscordWebhook = 'https://discord.com/api/webhooks/1234567890/abcdefg...'
+Config.DiscordBotName = 'Death Wipe'
+Config.DiscordBotAvatar = ''  -- Optional: URL to a custom avatar image`} />
+        </div>
+      </div>
+
+      {/* Notification Toggles */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Notification Toggles</h2>
+          <p className="text-sm text-base-content/60 mt-2">
+            death_wipe offers granular control over which events send Discord notifications:
+          </p>
+          <CodeBlock language="lua" title="config.lua" code={`Config.NotifyOnDeath = true     -- Send notification on each player death
+Config.NotifyOnLastLife = true  -- Send notification when player reaches last life
+Config.NotifyOnWipe = true      -- Send notification when character is wiped`} />
+          <p className="text-sm text-base-content/50 mt-2">
+            Set any of these to <code className="text-primary text-xs">false</code> to disable that specific notification type. <code className="text-primary text-xs">DiscordEnabled</code> must be <code className="text-primary text-xs">true</code> for any notifications to work.
+          </p>
+        </div>
+      </div>
+
+      {/* Notification Events */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Notification Events</h2>
+          <div className="mt-3 space-y-3">
+            <div className="p-3 bg-base-300 rounded-lg">
+              <h4 className="font-semibold text-base-content text-sm">💀 Player Death</h4>
+              <p className="text-xs text-base-content/60 mt-1">
+                Sent on each player death. Includes player name, death count, and remaining lives.
+              </p>
+              <span className="badge badge-xs badge-ghost mt-1">Config.NotifyOnDeath</span>
+            </div>
+            <div className="p-3 bg-base-300 rounded-lg">
+              <h4 className="font-semibold text-base-content text-sm">⚠️ Last Life Warning</h4>
+              <p className="text-xs text-base-content/60 mt-1">
+                Sent when a player reaches their final life. Serves as a heads-up to admins.
+              </p>
+              <span className="badge badge-xs badge-ghost mt-1">Config.NotifyOnLastLife</span>
+            </div>
+            <div className="p-3 bg-base-300 rounded-lg">
+              <h4 className="font-semibold text-base-content text-sm">🗑️ Character Wiped</h4>
+              <p className="text-xs text-base-content/60 mt-1">
+                Sent when a character is permanently wiped after reaching max deaths. Includes full player details.
+              </p>
+              <span className="badge badge-xs badge-ghost mt-1">Config.NotifyOnWipe</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Embed Examples */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Embed Examples</h2>
+
+          {/* Death embed */}
+          <div className="mt-3 bg-base-300 rounded-lg p-4 border-l-4 border-warning">
+            <span className="font-bold text-base-content text-sm">💀 Player Death</span>
+            <div className="space-y-1 text-xs text-base-content/60 mt-2">
+              <p><strong className="text-base-content/80">Player:</strong> Jane_Doe</p>
+              <p><strong className="text-base-content/80">Deaths:</strong> 3 / 5</p>
+              <p><strong className="text-base-content/80">Remaining Lives:</strong> 2</p>
+            </div>
+            <p className="text-[10px] text-base-content/40 mt-2">Death Wipe • Today at 5:15 PM</p>
+          </div>
+
+          {/* Last life embed */}
+          <div className="mt-3 bg-base-300 rounded-lg p-4 border-l-4 border-error">
+            <span className="font-bold text-base-content text-sm">⚠️ Last Life Warning</span>
+            <div className="space-y-1 text-xs text-base-content/60 mt-2">
+              <p><strong className="text-base-content/80">Player:</strong> Jane_Doe</p>
+              <p><strong className="text-base-content/80">Deaths:</strong> 4 / 5</p>
+              <p><strong className="text-base-content/80">Status:</strong> LAST LIFE — next death will wipe character</p>
+            </div>
+            <p className="text-[10px] text-base-content/40 mt-2">Death Wipe • Today at 6:30 PM</p>
+          </div>
+
+          {/* Wipe embed */}
+          <div className="mt-3 bg-base-300 rounded-lg p-4 border-l-4 border-error">
+            <span className="font-bold text-base-content text-sm">🗑️ Character Wiped</span>
+            <div className="space-y-1 text-xs text-base-content/60 mt-2">
+              <p><strong className="text-base-content/80">Player:</strong> Jane_Doe</p>
+              <p><strong className="text-base-content/80">Identifier:</strong> license:xyz789</p>
+              <p><strong className="text-base-content/80">Total Deaths:</strong> 5</p>
+              <p><strong className="text-base-content/80">Framework:</strong> QBCore</p>
+              <p><strong className="text-base-content/80">Result:</strong> Character permanently wiped</p>
+            </div>
+            <p className="text-[10px] text-base-content/40 mt-2">Death Wipe • Today at 7:45 PM</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="alert alert-warning">
+        <p className="text-sm">
+          <strong>Rate Limits:</strong> Discord webhooks have rate limits. On busy servers with many deaths,
+          consider disabling <code>NotifyOnDeath</code> and keeping only <code>NotifyOnLastLife</code> and <code>NotifyOnWipe</code> enabled.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+  </script>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+    const { CodeBlock, ConfigTable, CommandTable } = window;
+    /* ===== DwInstallPage ===== */
+    
+
+window.DwInstallPage = () => {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-base-content mb-2">death_wipe — Installation</h1>
+        <p className="text-base-content/60">Step-by-step guide to install and configure death_wipe on your server.</p>
+      </div>
+
+      {/* Requirements */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Requirements</h2>
+          <ul className="list-disc list-inside space-y-1 text-sm text-base-content/70 mt-2">
+            <li><strong className="text-base-content">oxmysql</strong> — Required for database operations</li>
+            <li><strong className="text-base-content">Supported framework</strong> — QBCore, QBox, ESX, VORPCore, or ND_Core</li>
+            <li><strong className="text-base-content">FiveM/RedM server</strong> with FxAP support</li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Installation Steps */}
+      <div>
+        <h2 className="text-xl font-bold text-base-content mb-4">Installation Steps</h2>
+        <div className="space-y-5">
+          <div className="flex gap-4">
+            <div className="badge badge-primary badge-lg shrink-0">1</div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-base-content">Place the Resource</h3>
+              <p className="text-sm text-base-content/60 mt-1">
+                Extract <code className="text-primary text-xs">death_wipe</code> into your server's <code className="text-primary text-xs">resources/</code> directory.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <div className="badge badge-primary badge-lg shrink-0">2</div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-base-content">Add to server.cfg</h3>
+              <p className="text-sm text-base-content/60 mt-1">
+                Ensure death_wipe starts after oxmysql and your framework.
+              </p>
+              <CodeBlock language="cfg" title="server.cfg" code={`ensure oxmysql
+ensure qb-core       # or es_extended, vorp_core, etc.
+ensure death_wipe`} />
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <div className="badge badge-primary badge-lg shrink-0">3</div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-base-content">Edit config.lua</h3>
+              <p className="text-sm text-base-content/60 mt-1">
+                Customize the max deaths, death counter display, locale, and Discord webhook settings.
+              </p>
+              <CodeBlock language="lua" title="config.lua" code={`Config = {}
+
+-- Death Settings
+Config.MaxDeaths = 5                 -- Number of deaths before character wipe
+Config.ShowDeathCount = true         -- Show remaining lives to the player
+
+-- Framework (leave empty for auto-detection)
+Config.ForceFramework = ''
+
+-- Locale
+Config.Locale = 'en'
+
+-- Discord Webhooks
+Config.DiscordEnabled = true
+Config.DiscordWebhook = 'https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE'
+Config.DiscordBotName = 'Death Wipe'
+Config.DiscordBotAvatar = ''
+
+-- Notification Toggles
+Config.NotifyOnDeath = true          -- Notify on each death
+Config.NotifyOnLastLife = true       -- Notify when player is on last life
+Config.NotifyOnWipe = true           -- Notify when character is wiped
+
+-- Version Check
+Config.VersionCheckURL = ''`} />
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <div className="badge badge-primary badge-lg shrink-0">4</div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-base-content">Start/Restart Server</h3>
+              <p className="text-sm text-base-content/60 mt-1">
+                The <code className="text-primary text-xs">death_wipe_counts</code> and <code className="text-primary text-xs">death_wipe_marked</code> tables are automatically created on first startup.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Database */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Database Tables</h2>
+          <p className="text-sm text-base-content/60 mt-1">
+            The script automatically creates the following tables if they don't exist:
+          </p>
+          <CodeBlock language="sql" title="Auto-created tables" code={`CREATE TABLE IF NOT EXISTS death_wipe_counts (
+    identifier VARCHAR(255) NOT NULL PRIMARY KEY,
+    deaths INT DEFAULT 0,
+    last_death TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS death_wipe_marked (
+    identifier VARCHAR(255) NOT NULL PRIMARY KEY,
+    wiped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);`} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+  </script>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+    const { CodeBlock, ConfigTable, CommandTable } = window;
+    /* ===== DwOverviewPage ===== */
+    
+
+window.DwOverviewPage = () => {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-base-content mb-2">death_wipe — Overview</h1>
+        <p className="text-base-content/60">
+          Tracks player deaths and permanently wipes their character after a configurable number of deaths.
+          Adds real consequences to dying on your server.
+        </p>
+        <span className="badge badge-ghost mt-2">v4.0</span>
+      </div>
+
+      {/* How it Works */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content flex items-center gap-2">
+            <Skull size={20} className="text-warning" /> How It Works
+          </h2>
+          <ol className="list-decimal list-inside space-y-2 text-sm text-base-content/70 mt-3">
+            <li>Each time a player dies, their death count is incremented in the database.</li>
+            <li>Optionally, the player is shown their current death count (configurable).</li>
+            <li>When a player is on their last life, a special warning is sent.</li>
+            <li>When the death count reaches the configured maximum (default: <strong className="text-base-content">5</strong>), the character is <strong className="text-error">permanently wiped</strong>.</li>
+            <li>The player is forced to create a new character on their next login.</li>
+            <li>Discord webhook notifications are sent at each stage (if enabled).</li>
+          </ol>
+        </div>
+      </div>
+
+      {/* Key Features */}
+      <div>
+        <h2 className="text-xl font-bold text-base-content mb-4">Key Features</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            { icon: Heart, title: 'Configurable Max Deaths', desc: 'Set how many deaths before a character is wiped. Default is 5 lives.', color: 'text-error' },
+            { icon: AlertTriangle, title: 'Death Counter Display', desc: 'Optionally show players their remaining lives after each death.', color: 'text-warning' },
+            { icon: Skull, title: 'Admin Commands', desc: 'Check, reset, and manage death counts with built-in admin commands.', color: 'text-primary' },
+            { icon: Database, title: 'Discord Notifications', desc: 'Per-event notification toggles: on death, last life warning, and wipe.', color: 'text-info' },
+          ].map((f) => (
+            <div key={f.title} className="card bg-base-200">
+              <div className="card-body">
+                <div className="flex items-center gap-2 mb-1">
+                  <f.icon size={18} className={f.color} />
+                  <h3 className="font-semibold text-base-content">{f.title}</h3>
+                </div>
+                <p className="text-sm text-base-content/60">{f.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Death Flow */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Death Flow</h2>
+          <div className="flex flex-wrap gap-2 mt-3 items-center">
+            {['Player Dies', '→', 'Count +1', '→', 'Check Max', '→', 'Last Life?', '→', 'Warning', '→', 'Next Death', '→', 'Character Wiped'].map((step, i) => (
+              step === '→' ? (
+                <span key={i} className="text-base-content/30">→</span>
+              ) : (
+                <span key={i} className={`badge ${step === 'Character Wiped' ? 'badge-error' : step === 'Warning' ? 'badge-warning' : 'badge-ghost'} badge-sm`}>{step}</span>
+              )
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Databases */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Database Tables</h2>
+          <p className="text-sm text-base-content/60 mt-2">death_wipe uses two database tables (auto-created on first start):</p>
+          <div className="mt-3 space-y-3">
+            <div className="p-3 bg-base-300 rounded-lg">
+              <code className="text-primary text-sm font-bold">death_wipe_counts</code>
+              <p className="text-xs text-base-content/60 mt-1">Stores each player's current death count. Reset when character is wiped or admin resets.</p>
+            </div>
+            <div className="p-3 bg-base-300 rounded-lg">
+              <code className="text-primary text-sm font-bold">death_wipe_marked</code>
+              <p className="text-xs text-base-content/60 mt-1">Marks players for re-wipe (same safety system as fatal_crash). Ensures wipe completes on reconnect if initially interrupted.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+  </script>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+    const { CodeBlock, ConfigTable, CommandTable } = window;
+    /* ===== FcConfigPage ===== */
+    
+
+const configOptions = [
+  { name: 'MinSpeedForFatalCrash', type: 'number', default: '120', description: 'Minimum vehicle speed in km/h for a crash to trigger the fatal check.' },
+  { name: 'DeathChance', type: 'number', default: '0.5', description: 'Probability (0.0 – 1.0) that a fatal crash kills and wipes the player. 0.5 = 50%.' },
+  { name: 'ForceFramework', type: 'string', default: "''", description: "Force a specific framework instead of auto-detection. Values: 'qbcore', 'esx', 'vorpcore', 'nd_core', or '' for auto." },
+  { name: 'Locale', type: 'string', default: "'en'", description: 'Language code for in-game messages. See Locales page for supported codes.' },
+  { name: 'DiscordEnabled', type: 'boolean', default: 'true', description: 'Enable or disable Discord webhook notifications.' },
+  { name: 'DiscordWebhook', type: 'string', default: "''", description: 'Discord webhook URL for crash notifications.' },
+  { name: 'DiscordBotName', type: 'string', default: "'Fatal Crash'", description: 'Display name for the Discord webhook bot.' },
+  { name: 'DiscordBotAvatar', type: 'string', default: "''", description: 'Avatar image URL for the Discord webhook bot.' },
+  { name: 'VersionCheckURL', type: 'string', default: "''", description: 'URL to check for script updates. Leave empty to disable version checking.' },
+];
+
+window.FcConfigPage = () => {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-base-content mb-2">fatal_crash — Configuration</h1>
+        <p className="text-base-content/60">
+          Complete reference for all <code className="text-primary text-xs">config.lua</code> options in fatal_crash v4.0.
+        </p>
+      </div>
+
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Config Options</h2>
+          <ConfigTable options={configOptions} />
+        </div>
+      </div>
+
+      <div className="alert alert-info">
+        <p className="text-sm">
+          <strong>Tip:</strong> Setting <code>DeathChance</code> to <code>1.0</code> makes every qualifying crash fatal.
+          Setting it to <code>0.0</code> effectively disables the wipe mechanic while still detecting crashes.
+        </p>
+      </div>
+
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Example Configuration</h2>
+          <p className="text-sm text-base-content/60 mt-1">
+            A common setup with a lower speed threshold and higher death chance for hardcore servers:
+          </p>
+          <div className="mt-3 bg-base-300 rounded-lg p-4">
+            <pre className="text-xs text-base-content/80 font-mono whitespace-pre">{`Config = {}
+
+Config.MinSpeedForFatalCrash = 80    -- Lower threshold for more danger
+Config.DeathChance = 0.75            -- 75% chance of fatal outcome
+Config.ForceFramework = ''           -- Auto-detect
+Config.Locale = 'en'
+
+Config.DiscordEnabled = true
+Config.DiscordWebhook = 'https://discord.com/api/webhooks/...'
+Config.DiscordBotName = 'Fatal Crash'
+Config.DiscordBotAvatar = ''
+Config.VersionCheckURL = ''`}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+  </script>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+    const { CodeBlock, ConfigTable, CommandTable } = window;
+    /* ===== FcDiscordPage ===== */
+    
+
+
+window.FcDiscordPage = () => {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-base-content mb-2">fatal_crash — Discord Integration</h1>
+        <p className="text-base-content/60">
+          Set up Discord webhook notifications for fatal crash events on your server.
+        </p>
+      </div>
+
+      {/* Setup */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content flex items-center gap-2">
+            <MessageSquare size={20} className="text-primary" /> Webhook Setup
+          </h2>
+          <div className="mt-3 space-y-4">
+            <div className="flex gap-3">
+              <div className="badge badge-primary badge-lg shrink-0">1</div>
+              <p className="text-sm text-base-content/70">Open your Discord server and go to <strong>Server Settings → Integrations → Webhooks</strong>.</p>
+            </div>
+            <div className="flex gap-3">
+              <div className="badge badge-primary badge-lg shrink-0">2</div>
+              <p className="text-sm text-base-content/70">Click <strong>New Webhook</strong>, choose a channel for crash notifications, and copy the webhook URL.</p>
+            </div>
+            <div className="flex gap-3">
+              <div className="badge badge-primary badge-lg shrink-0">3</div>
+              <p className="text-sm text-base-content/70">Paste the URL into your <code className="text-primary text-xs">config.lua</code>:</p>
+            </div>
+          </div>
+          <CodeBlock language="lua" title="config.lua" code={`Config.DiscordEnabled = true
+Config.DiscordWebhook = 'https://discord.com/api/webhooks/1234567890/abcdefg...'
+Config.DiscordBotName = 'Fatal Crash'
+Config.DiscordBotAvatar = ''  -- Optional: URL to a custom avatar image`} />
+        </div>
+      </div>
+
+      {/* Notification Events */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Notification Events</h2>
+          <p className="text-sm text-base-content/60 mt-2">
+            When Discord is enabled, the following events trigger webhook notifications:
+          </p>
+          <div className="mt-3 space-y-3">
+            <div className="p-3 bg-base-300 rounded-lg">
+              <h4 className="font-semibold text-base-content text-sm">💥 Fatal Crash & Character Wipe</h4>
+              <p className="text-xs text-base-content/60 mt-1">
+                Sent when a player crashes above the speed threshold and the death roll succeeds. Includes
+                the player's name, identifier, crash speed, and framework detected.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Embed Example */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Embed Example</h2>
+          <p className="text-sm text-base-content/60 mt-2">
+            An example of what the Discord embed looks like:
+          </p>
+          <div className="mt-3 bg-base-300 rounded-lg p-4 border-l-4 border-error">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-bold text-base-content text-sm">💀 Fatal Crash — Character Wiped</span>
+            </div>
+            <div className="space-y-1 text-xs text-base-content/60">
+              <p><strong className="text-base-content/80">Player:</strong> John_Doe</p>
+              <p><strong className="text-base-content/80">Identifier:</strong> license:abcdef123456</p>
+              <p><strong className="text-base-content/80">Speed:</strong> 185 km/h</p>
+              <p><strong className="text-base-content/80">Framework:</strong> QBCore</p>
+              <p><strong className="text-base-content/80">Result:</strong> Character permanently wiped</p>
+            </div>
+            <p className="text-[10px] text-base-content/40 mt-2">Fatal Crash • Today at 3:42 PM</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="alert alert-warning">
+        <p className="text-sm">
+          <strong>Rate Limits:</strong> Discord webhooks have rate limits. The script handles this gracefully,
+          but on very busy servers, some notifications may be slightly delayed.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+  </script>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+    const { CodeBlock, ConfigTable, CommandTable } = window;
+    /* ===== FcInstallPage ===== */
+    
+
+window.FcInstallPage = () => {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-base-content mb-2">fatal_crash — Installation</h1>
+        <p className="text-base-content/60">Step-by-step guide to install and configure fatal_crash on your server.</p>
+      </div>
+
+      {/* Requirements */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Requirements</h2>
+          <ul className="list-disc list-inside space-y-1 text-sm text-base-content/70 mt-2">
+            <li><strong className="text-base-content">oxmysql</strong> — Required for database operations</li>
+            <li><strong className="text-base-content">Supported framework</strong> — QBCore, QBox, ESX, VORPCore, or ND_Core</li>
+            <li><strong className="text-base-content">FiveM/RedM server</strong> with FxAP support</li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Installation Steps */}
+      <div>
+        <h2 className="text-xl font-bold text-base-content mb-4">Installation Steps</h2>
+        <div className="space-y-5">
+          <div className="flex gap-4">
+            <div className="badge badge-primary badge-lg shrink-0">1</div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-base-content">Place the Resource</h3>
+              <p className="text-sm text-base-content/60 mt-1">
+                Extract <code className="text-primary text-xs">fatal_crash</code> into your server's <code className="text-primary text-xs">resources/</code> directory.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <div className="badge badge-primary badge-lg shrink-0">2</div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-base-content">Add to server.cfg</h3>
+              <p className="text-sm text-base-content/60 mt-1">
+                Ensure fatal_crash starts after oxmysql and your framework.
+              </p>
+              <CodeBlock language="cfg" title="server.cfg" code={`ensure oxmysql
+ensure qb-core       # or es_extended, vorp_core, etc.
+ensure fatal_crash`} />
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <div className="badge badge-primary badge-lg shrink-0">3</div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-base-content">Edit config.lua</h3>
+              <p className="text-sm text-base-content/60 mt-1">
+                Customize the crash speed threshold, death chance, locale, and Discord webhook settings.
+              </p>
+              <CodeBlock language="lua" title="config.lua" code={`Config = {}
+
+-- Crash Settings
+Config.MinSpeedForFatalCrash = 120   -- Minimum speed in km/h for a crash to be considered fatal
+Config.DeathChance = 0.5             -- 0.0 to 1.0 probability of death on fatal crash
+
+-- Framework (leave empty for auto-detection)
+Config.ForceFramework = ''
+
+-- Locale
+Config.Locale = 'en'
+
+-- Discord Webhooks
+Config.DiscordEnabled = true
+Config.DiscordWebhook = 'https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE'
+Config.DiscordBotName = 'Fatal Crash'
+Config.DiscordBotAvatar = ''
+
+-- Version Check
+Config.VersionCheckURL = ''`} />
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <div className="badge badge-primary badge-lg shrink-0">4</div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-base-content">Start/Restart Server</h3>
+              <p className="text-sm text-base-content/60 mt-1">
+                The <code className="text-primary text-xs">fatal_crash_wiped</code> table is automatically created on first startup. No manual SQL required.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Database */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Database Table</h2>
+          <p className="text-sm text-base-content/60 mt-1">
+            The script automatically creates the following table if it doesn't exist:
+          </p>
+          <CodeBlock language="sql" title="Auto-created table" code={`CREATE TABLE IF NOT EXISTS fatal_crash_wiped (
+    identifier VARCHAR(255) NOT NULL PRIMARY KEY,
+    wiped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);`} />
+          <p className="text-sm text-base-content/50 mt-2">
+            This table tracks players marked for re-wipe as part of the mark-and-rewipe system.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+  </script>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+    const { CodeBlock, ConfigTable, CommandTable } = window;
+    /* ===== FcOverviewPage ===== */
+    
+
+window.FcOverviewPage = () => {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-base-content mb-2">fatal_crash — Overview</h1>
+        <p className="text-base-content/60">
+          Detects high-speed vehicle crashes and has a configurable chance to permanently kill the player
+          and wipe their character entirely from the database.
+        </p>
+        <span className="badge badge-ghost mt-2">v4.0</span>
+      </div>
+
+      {/* How it Works */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content flex items-center gap-2">
+            <Zap size={20} className="text-error" /> How It Works
+          </h2>
+          <ol className="list-decimal list-inside space-y-2 text-sm text-base-content/70 mt-3">
+            <li>The script monitors vehicle speed on the client side.</li>
+            <li>When a crash is detected above the configured speed threshold (default: <strong className="text-base-content">120 km/h</strong>), the event fires.</li>
+            <li>A random roll is made against the configured death chance (default: <strong className="text-base-content">50%</strong>).</li>
+            <li>If the roll succeeds, the player is killed and their character is <strong className="text-error">permanently wiped</strong> from the database.</li>
+            <li>The player is forced to create a new character on their next login.</li>
+            <li>A Discord webhook notification is sent (if enabled).</li>
+          </ol>
+        </div>
+      </div>
+
+      {/* Key Features */}
+      <div>
+        <h2 className="text-xl font-bold text-base-content mb-4">Key Features</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            { icon: AlertTriangle, title: 'Configurable Speed Threshold', desc: 'Set the minimum crash speed (km/h) that triggers the fatal check. Default is 120 km/h.', color: 'text-warning' },
+            { icon: Zap, title: 'Configurable Death Chance', desc: 'Set the probability (0.0 – 1.0) of a fatal outcome. Default is 0.5 (50%).', color: 'text-error' },
+            { icon: RefreshCw, title: 'Mark-and-Rewipe System', desc: 'Ensures wiped characters stay wiped even if deletion partially fails.', color: 'text-info' },
+            { icon: Database, title: 'SafeExecute Wrappers', desc: 'All database operations use SafeExecute to prevent errors from missing tables.', color: 'text-success' },
+          ].map((f) => (
+            <div key={f.title} className="card bg-base-200">
+              <div className="card-body">
+                <div className="flex items-center gap-2 mb-1">
+                  <f.icon size={18} className={f.color} />
+                  <h3 className="font-semibold text-base-content">{f.title}</h3>
+                </div>
+                <p className="text-sm text-base-content/60">{f.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Mark-and-Rewipe */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content flex items-center gap-2">
+            <RefreshCw size={20} className="text-info" /> Mark-and-Rewipe System
+          </h2>
+          <p className="text-sm text-base-content/60 mt-2">
+            When a character wipe is triggered, the player's identifier is stored in the
+            <code className="text-primary text-xs mx-1">fatal_crash_wiped</code> database table. This "mark" serves
+            as a safety net:
+          </p>
+          <ul className="list-disc list-inside space-y-2 text-sm text-base-content/70 mt-3">
+            <li>If a database deletion partially fails (e.g., a table is missing), the player is still marked.</li>
+            <li>On the player's next reconnection, the script checks for the mark and re-attempts the full wipe.</li>
+            <li>This ensures no character data survives even if the initial wipe had errors.</li>
+            <li>The mark is only removed after a completely successful wipe.</li>
+          </ul>
+        </div>
+      </div>
+
+      {/* SafeExecute */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content flex items-center gap-2">
+            <Database size={20} className="text-success" /> SafeExecute Wrappers
+          </h2>
+          <p className="text-sm text-base-content/60 mt-2">
+            All database queries are wrapped in SafeExecute functions. If a table doesn't exist on your server
+            (e.g., you don't use a phone system), the query silently skips instead of throwing an error.
+            This makes the script compatible with any server setup without requiring table modifications.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+  </script>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+    const { CodeBlock, ConfigTable, CommandTable } = window;
+    /* ===== FrameworksPage ===== */
+    
+const frameworks = [
+  {
+    name: 'QBCore / QBox',
+    badge: 'FiveM',
+    tables: [
+      'players', 'player_vehicles', 'player_houses', 'apartments', 'playerskins',
+      'phone_*', 'bank_accounts', 'crypto', 'player_inventory / inventory',
+      'player_jobs', 'player_gangs',
+    ],
+  },
+  {
+    name: 'ESX',
+    badge: 'FiveM',
+    tables: [
+      'users', 'owned_vehicles', 'user_accounts', 'user_inventory', 'jobs',
+      'user_licenses', 'properties', 'phone_*', 'skin', 'billing',
+    ],
+  },
+  {
+    name: 'VORPCore',
+    badge: 'RedM',
+    tables: [
+      'characters', 'character_inventory', 'horses', 'wagons', 'character_skins',
+      'character_houses', 'character_money', 'character_skills',
+    ],
+  },
+  {
+    name: 'ND_Core',
+    badge: 'FiveM',
+    tables: [
+      'nd_characters', 'nd_vehicles', 'nd_inventory', 'nd_skins',
+      'nd_properties', 'nd_accounts',
+    ],
+  },
+];
+
+window.FrameworksPage = () => {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-base-content mb-2">Supported Frameworks</h1>
+        <p className="text-base-content/60">
+          All nox dev scripts auto-detect your framework at startup. No manual framework configuration
+          is needed unless you want to force a specific one via <code className="text-primary text-xs">ForceFramework</code>.
+        </p>
+      </div>
+
+      <div className="alert alert-info">
+        <p className="text-sm">
+          <strong>Auto-Detection Order:</strong> QBCore/QBox → ESX → VORPCore → ND_Core. The first framework
+          found running on your server will be used.
+        </p>
+      </div>
+
+      <div className="space-y-6">
+        {frameworks.map((fw) => (
+          <div key={fw.name} className="card bg-base-200">
+            <div className="card-body">
+              <div className="flex items-center gap-3 mb-3">
+                <h2 className="text-xl font-bold text-base-content">{fw.name}</h2>
+                <span className="badge badge-sm badge-primary">{fw.badge}</span>
+              </div>
+              <p className="text-sm text-base-content/60 mb-3">
+                The following database tables are wiped when a character is deleted:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {fw.tables.map((t) => (
+                  <code key={t} className="badge badge-ghost text-xs font-mono">{t}</code>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Forcing a Framework</h2>
+          <p className="text-sm text-base-content/60 mt-1">
+            If auto-detection isn't working correctly (e.g., multiple frameworks installed), you can force
+            a specific framework in <code className="text-primary text-xs">config.lua</code>:
+          </p>
+          <div className="mt-2 overflow-x-auto">
+            <table className="table table-sm">
+              <thead>
+                <tr>
+                  <th className="text-base-content/60">Value</th>
+                  <th className="text-base-content/60">Framework</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ["''", 'Auto-detect (default)'],
+                  ["'qbcore'", 'QBCore / QBox'],
+                  ["'esx'", 'ESX'],
+                  ["'vorpcore'", 'VORPCore'],
+                  ["'nd_core'", 'ND_Core'],
+                ].map(([val, fw]) => (
+                  <tr key={val}>
+                    <td><code className="text-primary text-xs">{val}</code></td>
+                    <td className="text-sm text-base-content/70">{fw}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+  </script>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+    const { CodeBlock, ConfigTable, CommandTable } = window;
+    /* ===== FxapPage ===== */
+    
+
+
+window.FxapPage = () => {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-base-content mb-2">FxAP Protection</h1>
+        <p className="text-base-content/60">
+          All nox dev scripts use Cfx.re's FiveM Asset Protection (FxAP) to protect core logic
+          while keeping configuration and locale files fully editable.
+        </p>
+      </div>
+
+      {/* What is FxAP */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">What is FxAP?</h2>
+          <p className="text-sm text-base-content/60 mt-2">
+            FiveM Asset Protection (FxAP) is Cfx.re's built-in asset escrow system. It encrypts
+            specified files so they can only run on servers linked to the purchaser's Cfx.re account.
+            This protects script authors from piracy while allowing legitimate customization.
+          </p>
+        </div>
+      </div>
+
+      {/* Protected vs Editable */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="card bg-base-200">
+          <div className="card-body">
+            <div className="flex items-center gap-2 mb-3">
+              <Lock size={20} className="text-error" />
+              <h2 className="text-lg font-bold text-base-content">Escrowed (Protected)</h2>
+            </div>
+            <ul className="space-y-2 text-sm text-base-content/70">
+              <li className="flex items-center gap-2">
+                <span className="badge badge-xs badge-error">locked</span>
+                <code className="text-xs">server.lua</code> — Core server logic
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="badge badge-xs badge-error">locked</span>
+                <code className="text-xs">client.lua</code> — Core client logic
+              </li>
+            </ul>
+            <p className="text-xs text-base-content/50 mt-3">
+              These files cannot be viewed, modified, or extracted. They run through Cfx.re's secure runtime.
+            </p>
+          </div>
+        </div>
+
+        <div className="card bg-base-200">
+          <div className="card-body">
+            <div className="flex items-center gap-2 mb-3">
+              <Unlock size={20} className="text-success" />
+              <h2 className="text-lg font-bold text-base-content">Editable (escrow_ignore)</h2>
+            </div>
+            <ul className="space-y-2 text-sm text-base-content/70">
+              <li className="flex items-center gap-2">
+                <span className="badge badge-xs badge-success">open</span>
+                <code className="text-xs">config.lua</code> — All configuration options
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="badge badge-xs badge-success">open</span>
+                <code className="text-xs">locales/*.lua</code> — All locale/translation files
+              </li>
+            </ul>
+            <p className="text-xs text-base-content/50 mt-3">
+              These files are excluded from escrow and can be freely edited to customize the script.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* How escrow_ignore works */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">How escrow_ignore Works</h2>
+          <p className="text-sm text-base-content/60 mt-2">
+            The <code className="text-primary text-xs">escrow_ignore</code> directive in <code className="text-primary text-xs">fxmanifest.lua</code> tells
+            FxAP which files to exclude from encryption. These files remain as plain Lua that you can open and edit.
+          </p>
+          <CodeBlock language="lua" title="fxmanifest.lua (example)" code={`fx_version 'cerulean'
+game 'gta5'
+
+escrow_ignore {
+    'config.lua',
+    'locales/*.lua'
+}
+
+server_scripts {
+    '@oxmysql/lib/MySQL.lua',
+    'config.lua',
+    'locales/*.lua',
+    'server.lua',
+}
+
+client_scripts {
+    'config.lua',
+    'locales/*.lua',
+    'client.lua',
+}`} />
+        </div>
+      </div>
+
+      <div className="alert alert-info">
+        <p className="text-sm">
+          <strong>Note:</strong> If you modify escrowed files, the resource will fail to load. Only edit files
+          listed in <code>escrow_ignore</code>.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+  </script>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+    const { CodeBlock, ConfigTable, CommandTable } = window;
+    /* ===== GettingStartedPage ===== */
+    
+
+window.GettingStartedPage = () => {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-base-content mb-2">Getting Started</h1>
+        <p className="text-base-content/60">General installation steps that apply to all nox dev scripts.</p>
+      </div>
+
+      {/* Requirements */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Requirements</h2>
+          <ul className="list-disc list-inside space-y-2 text-base-content/70 text-sm mt-2">
+            <li><strong className="text-base-content">oxmysql</strong> — Required for all database operations. Must be started before any nox dev resource.</li>
+            <li><strong className="text-base-content">A supported framework</strong> — QBCore, QBox, ESX, VORPCore, or ND_Core (auto-detected).</li>
+            <li><strong className="text-base-content">FiveM/RedM server</strong> — Running a recent build with FxAP support.</li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Steps */}
+      <div>
+        <h2 className="text-xl font-bold text-base-content mb-4">Installation Steps</h2>
+        <div className="space-y-4">
+          <div className="flex gap-4">
+            <div className="badge badge-primary badge-lg shrink-0">1</div>
+            <div>
+              <h3 className="font-semibold text-base-content">Download the Script</h3>
+              <p className="text-sm text-base-content/60 mt-1">Purchase and download the script from the Cfx.re asset store (Tebex). The escrowed files will be tied to your Cfx.re account.</p>
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <div className="badge badge-primary badge-lg shrink-0">2</div>
+            <div>
+              <h3 className="font-semibold text-base-content">Add to Server Resources</h3>
+              <p className="text-sm text-base-content/60 mt-1">Place the resource folder in your server's <code className="text-primary text-xs">resources</code> directory.</p>
+              <CodeBlock language="cfg" title="server.cfg" code={`ensure oxmysql
+ensure your-framework
+ensure fatal_crash  # or death_wipe`} />
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <div className="badge badge-primary badge-lg shrink-0">3</div>
+            <div>
+              <h3 className="font-semibold text-base-content">Configure config.lua</h3>
+              <p className="text-sm text-base-content/60 mt-1">Open <code className="text-primary text-xs">config.lua</code> and adjust settings to your liking. The config file is not escrowed and fully editable.</p>
+              <CodeBlock language="lua" title="config.lua" code={`Config = {}
+Config.MinSpeedForFatalCrash = 120  -- km/h (fatal_crash)
+Config.MaxDeaths = 5                -- (death_wipe)
+Config.Locale = 'en'
+Config.DiscordEnabled = true
+Config.DiscordWebhook = 'https://discord.com/api/webhooks/...'`} />
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <div className="badge badge-primary badge-lg shrink-0">4</div>
+            <div>
+              <h3 className="font-semibold text-base-content">Restart Your Server</h3>
+              <p className="text-sm text-base-content/60 mt-1">Restart your server or use <code className="text-primary text-xs">ensure resource_name</code> from the console. Database tables are created automatically on first start.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Ensure Order */}
+      <div className="alert alert-warning">
+        <div>
+          <h3 className="font-bold">Important: Resource Start Order</h3>
+          <p className="text-sm">Always ensure <code>oxmysql</code> and your framework start <strong>before</strong> any nox dev script. The scripts depend on both being available at startup.</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+  </script>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+    const { CodeBlock, ConfigTable, CommandTable } = window;
+    /* ===== HomePage ===== */
+    
+
+const scripts = [
+  {
+    name: 'fatal_crash',
+    version: '4.0',
+    icon: Zap,
+    description: 'Detects high-speed car crashes and has a configurable chance to permanently kill and wipe the player\'s character from the database.',
+    color: 'text-error',
+  },
+  {
+    name: 'death_wipe',
+    version: '4.0',
+    icon: Skull,
+    description: 'Tracks player deaths and wipes their character after a configurable number of deaths, adding real consequences to dying.',
+    color: 'text-warning',
+  },
+];
+
+const features = [
+  { icon: Shield, title: 'Multi-Framework', desc: 'Auto-detects QBCore, QBox, ESX, VORPCore, and ND_Core' },
+  { icon: Globe, title: '20 Locales', desc: 'Built-in support for 20 languages with easy custom locale creation' },
+  { icon: MessageSquare, title: 'Discord Integration', desc: 'Webhook notifications for all critical events with rich embeds' },
+];
+
+window.HomePage = () => {
+  return (
+    <div className="space-y-8">
+      {/* Hero */}
+      <div className="text-center py-8">
+        <h1 className="text-4xl font-bold text-base-content mb-3">nox dev docs</h1>
+        <p className="text-lg text-base-content/60 max-w-2xl mx-auto">
+          Official documentation for nox dev FiveM & RedM scripts. Hardcore gameplay mechanics
+          that add real consequences to your server.
+        </p>
+      </div>
+
+      {/* Scripts */}
+      <div>
+        <h2 className="text-2xl font-bold text-base-content mb-4">Available Scripts</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {scripts.map((s) => (
+            <div key={s.name} className="card bg-base-200 shadow-md">
+              <div className="card-body">
+                <div className="flex items-center gap-3 mb-2">
+                  <s.icon className={s.color} size={24} />
+                  <div>
+                    <h3 className="card-title text-base-content">{s.name}</h3>
+                    <span className="badge badge-sm badge-ghost">v{s.version}</span>
+                  </div>
+                </div>
+                <p className="text-base-content/60 text-sm">{s.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Features */}
+      <div>
+        <h2 className="text-2xl font-bold text-base-content mb-4">Shared Features</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {features.map((f) => (
+            <div key={f.title} className="card bg-base-200">
+              <div className="card-body items-center text-center">
+                <f.icon size={28} className="text-primary mb-1" />
+                <h4 className="font-semibold text-base-content">{f.title}</h4>
+                <p className="text-sm text-base-content/60">{f.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Quick Links */}
+      <div>
+        <h2 className="text-2xl font-bold text-base-content mb-4">Quick Links</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {[
+            { label: 'Getting Started', desc: 'Installation and requirements' },
+            { label: 'Supported Frameworks', desc: 'See which frameworks are supported' },
+            { label: 'Locale System', desc: '20 built-in languages' },
+            { label: 'FxAP Protection', desc: 'How asset escrow works' },
+          ].map((link) => (
+            <div key={link.label} className="flex items-center gap-3 p-3 rounded-lg bg-base-200 hover:bg-base-300 transition-colors cursor-pointer">
+              <ArrowRight size={16} className="text-primary shrink-0" />
+              <div>
+                <p className="font-medium text-base-content text-sm">{link.label}</p>
+                <p className="text-xs text-base-content/50">{link.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+  </script>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+    const { CodeBlock, ConfigTable, CommandTable } = window;
+    /* ===== LocalesPage ===== */
+    
+
+const locales = [
+  { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'fr', name: 'French', flag: '🇫🇷' },
+  { code: 'es', name: 'Spanish', flag: '🇪🇸' },
+  { code: 'de', name: 'German', flag: '🇩🇪' },
+  { code: 'pt', name: 'Portuguese', flag: '🇵🇹' },
+  { code: 'it', name: 'Italian', flag: '🇮🇹' },
+  { code: 'nl', name: 'Dutch', flag: '🇳🇱' },
+  { code: 'sv', name: 'Swedish', flag: '🇸🇪' },
+  { code: 'da', name: 'Danish', flag: '🇩🇰' },
+  { code: 'no', name: 'Norwegian', flag: '🇳🇴' },
+  { code: 'pl', name: 'Polish', flag: '🇵🇱' },
+  { code: 'tr', name: 'Turkish', flag: '🇹🇷' },
+  { code: 'ru', name: 'Russian', flag: '🇷🇺' },
+  { code: 'ar', name: 'Arabic', flag: '🇸🇦' },
+  { code: 'zh', name: 'Chinese', flag: '🇨🇳' },
+  { code: 'ko', name: 'Korean', flag: '🇰🇷' },
+  { code: 'ja', name: 'Japanese', flag: '🇯🇵' },
+  { code: 'fi', name: 'Finnish', flag: '🇫🇮' },
+  { code: 'cs', name: 'Czech', flag: '🇨🇿' },
+  { code: 'ro', name: 'Romanian', flag: '🇷🇴' },
+];
+
+window.LocalesPage = () => {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-base-content mb-2">Locale System</h1>
+        <p className="text-base-content/60">
+          All nox dev scripts include built-in support for 20 languages. Locale files are stored
+          in the <code className="text-primary text-xs">locales/</code> folder and are fully editable
+          (not escrowed).
+        </p>
+      </div>
+
+      {/* Setting Locale */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Setting Your Locale</h2>
+          <p className="text-sm text-base-content/60 mt-1">
+            Set the <code className="text-primary text-xs">Locale</code> option in your <code className="text-primary text-xs">config.lua</code> to the desired language code:
+          </p>
+          <CodeBlock language="lua" title="config.lua" code={`Config.Locale = 'en'  -- Change to any supported code below`} />
+        </div>
+      </div>
+
+      {/* Locale Grid */}
+      <div>
+        <h2 className="text-xl font-bold text-base-content mb-4">Supported Languages</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          {locales.map((l) => (
+            <div key={l.code} className="flex items-center gap-3 p-3 rounded-lg bg-base-200">
+              <span className="text-xl">{l.flag}</span>
+              <div>
+                <p className="font-medium text-base-content text-sm">{l.name}</p>
+                <code className="text-xs text-base-content/50">{l.code}</code>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Custom Locale */}
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <h2 className="text-xl font-bold text-base-content">Adding a Custom Locale</h2>
+          <p className="text-sm text-base-content/60 mt-2">
+            You can create your own locale or modify an existing one. Locale files are plain Lua
+            tables located in the <code className="text-primary text-xs">locales/</code> directory.
+          </p>
+          <div className="mt-3 space-y-3">
+            <div className="flex gap-3">
+              <div className="badge badge-primary badge-lg shrink-0">1</div>
+              <p className="text-sm text-base-content/70">Copy an existing locale file (e.g., <code className="text-primary text-xs">locales/en.lua</code>) and rename it to your language code.</p>
+            </div>
+            <div className="flex gap-3">
+              <div className="badge badge-primary badge-lg shrink-0">2</div>
+              <p className="text-sm text-base-content/70">Translate all string values in the file.</p>
+            </div>
+            <div className="flex gap-3">
+              <div className="badge badge-primary badge-lg shrink-0">3</div>
+              <p className="text-sm text-base-content/70">Set <code className="text-primary text-xs">Config.Locale</code> to your new language code in <code className="text-primary text-xs">config.lua</code>.</p>
+            </div>
+          </div>
+          <CodeBlock language="lua" title="locales/custom.lua" code={`Locales['custom'] = {
+    fatal_crash = "Your custom fatal crash message for %s",
+    character_wiped = "Your custom wipe message",
+    -- ... translate all keys from en.lua
+}`} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+  </script>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+    /* ===== Sidebar ===== */
+    
+
+[];
+}
+
+const sections = [
+  {
+    id: 'general',
+    label: 'General',
+    emoji: '📚',
+    icon: <Book size={16} />,
+    items: [
+      { id: 'home', label: 'Home', icon: <Home size={14} /> },
+      { id: 'getting-started', label: 'Getting Started', icon: <Zap size={14} /> },
+      { id: 'frameworks', label: 'Frameworks', icon: <Settings size={14} /> },
+      { id: 'locales', label: 'Locales System', icon: <Globe size={14} /> },
+      { id: 'fxap', label: 'FxAP Protection', icon: <Shield size={14} /> },
+    ],
+  },
+  {
+    id: 'fatal_crash',
+    label: 'fatal_crash',
+    emoji: '💥',
+    icon: <Skull size={16} />,
+    items: [
+      { id: 'fc-overview', label: 'Overview', icon: <Book size={14} /> },
+      { id: 'fc-install', label: 'Installation', icon: <Zap size={14} /> },
+      { id: 'fc-config', label: 'Configuration', icon: <Settings size={14} /> },
+      { id: 'fc-discord', label: 'Discord Webhooks', icon: <MessageSquare size={14} /> },
+    ],
+  },
+  {
+    id: 'death_wipe',
+    label: 'death_wipe',
+    emoji: '☠️',
+    icon: <Skull size={16} />,
+    items: [
+      { id: 'dw-overview', label: 'Overview', icon: <Book size={14} /> },
+      { id: 'dw-install', label: 'Installation', icon: <Zap size={14} /> },
+      { id: 'dw-config', label: 'Configuration', icon: <Settings size={14} /> },
+      { id: 'dw-commands', label: 'Admin Commands', icon: <Terminal size={14} /> },
+      { id: 'dw-discord', label: 'Discord Webhooks', icon: <MessageSquare size={14} /> },
+    ],
+  },
+];
+
+window.Sidebar = ({ currentPage, onNavigate }) => {
+  const [expanded, setExpanded] = useState>({
+    general: true,
+    fatal_crash: true,
+    death_wipe: true,
+  });
+
+  const toggleSection = (id) => {
+    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  return (
+    <div className="w-64 min-h-screen bg-base-200 flex flex-col border-r border-base-300">
+      {/* Logo */}
+      <div className="p-4 border-b border-base-300">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+            <span className="text-primary-content font-bold text-sm">N</span>
+          </div>
+          <div>
+            <div className="font-bold text-base-content text-sm">nox dev</div>
+            <div className="text-[10px] text-base-content/50">Documentation</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 overflow-y-auto p-2">
+        {sections.map((section) => (
+          <div key={section.id} className="mb-1">
+            <button
+              onClick={() => toggleSection(section.id)}
+              className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold text-base-content/70 hover:bg-base-300 transition-colors"
+            >
+              {expanded[section.id] ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+              <span className="opacity-60">{section.icon}</span>
+              {section.label}
+            </button>
+
+            {expanded[section.id] && (
+              <div className="ml-3 mt-0.5">
+                {section.items.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => onNavigate(item.id)}
+                    className={`w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                      currentPage === item.id
+                        ? 'bg-primary/15 text-primary font-medium'
+                        : 'text-base-content/60 hover:bg-base-300 hover:text-base-content'
+                    }`}
+                  >
+                    <span className={currentPage === item.id ? 'text-primary' : 'opacity-50'}>{item.icon}</span>
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </nav>
+
+      {/* Footer */}
+      <div className="p-3 border-t border-base-300">
+        <div className="text-[10px] text-base-content/40 text-center">
+          © 2025 nox dev • All scripts FxAP protected
+        </div>
+      </div>
+    </div>
+  );
+};
+
+  </script>
+
+  <script type="text/babel" data-type="module">
+    const { useState } = React;
+    const {Sidebar, CodeBlock, ConfigTable, CommandTable, DwCommandsPage, DwConfigPage, DwDiscordPage, DwInstallPage, DwOverviewPage, FcConfigPage, FcDiscordPage, FcInstallPage, FcOverviewPage, FrameworksPage, FxapPage, GettingStartedPage, HomePage, LocalesPage} = window;
+
+    /* ===== App ===== */
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const pages = {
+  'home': <HomePage />,
+  'getting-started': <GettingStartedPage />,
+  'frameworks': <FrameworksPage />,
+  'locales': <LocalesPage />,
+  'fxap': <FxapPage />,
+  'fc-overview': <FcOverviewPage />,
+  'fc-install': <FcInstallPage />,
+  'fc-config': <FcConfigPage />,
+  'fc-discord': <FcDiscordPage />,
+  'dw-overview': <DwOverviewPage />,
+  'dw-install': <DwInstallPage />,
+  'dw-config': <DwConfigPage />,
+  'dw-commands': <DwCommandsPage />,
+  'dw-discord': <DwDiscordPage />,
+};
+
+const App = () => {
+  const [currentPage, setCurrentPage] = useState('home');
+
+  return (
+    <div className="flex min-h-screen bg-base-100">
+      <Sidebar currentPage={currentPage} onNavigate={setCurrentPage} />
+      <main className="flex-1 overflow-y-auto">
+        <div className="max-w-4xl mx-auto p-6 pb-20">
+          {pages[currentPage] || <HomePage />}
+        </div>
+      </main>
+    </div>
+  );
+};
+
+
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(React.createElement(App));
+  </script>
+
+</body>
+</html>
