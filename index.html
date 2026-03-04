@@ -1,1 +1,759 @@
-test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>nox dev — Documentation</title>
+  <style>
+    :root {
+      --bg: #1a1b2e;
+      --bg2: #1e2035;
+      --bg3: #252742;
+      --text: #e2e8f0;
+      --text2: #94a3b8;
+      --accent: #8b5cf6;
+      --accent2: #a78bfa;
+      --green: #34d399;
+      --red: #f87171;
+      --orange: #fbbf24;
+      --blue: #60a5fa;
+      --border: #2d3054;
+      --code-bg: #0f1021;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Layout */
+    .layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 280px; background: var(--bg2); border-right: 1px solid var(--border); padding: 0; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; z-index: 10; }
+    .main { flex: 1; margin-left: 280px; padding: 40px 60px; max-width: 900px; }
+
+    /* Sidebar */
+    .sidebar-header { padding: 24px 20px; border-bottom: 1px solid var(--border); }
+    .sidebar-header h1 { font-size: 1.4rem; color: var(--accent2); }
+    .sidebar-header p { font-size: 0.8rem; color: var(--text2); margin-top: 2px; }
+    .sidebar-section { padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .sidebar-section-title { padding: 8px 20px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text2); font-weight: 600; }
+    .sidebar-link { display: block; padding: 8px 20px 8px 28px; font-size: 0.9rem; color: var(--text2); cursor: pointer; transition: all 0.15s; border-left: 3px solid transparent; }
+    .sidebar-link:hover { background: var(--bg3); color: var(--text); text-decoration: none; }
+    .sidebar-link.active { background: var(--bg3); color: var(--accent2); border-left-color: var(--accent); }
+    .sidebar-link.sub { padding-left: 44px; font-size: 0.85rem; }
+    .sidebar-group-title { display: flex; align-items: center; justify-content: space-between; padding: 8px 20px 8px 20px; font-size: 0.9rem; color: var(--text); cursor: pointer; font-weight: 600; }
+    .sidebar-group-title:hover { background: var(--bg3); }
+    .sidebar-group-title .arrow { transition: transform 0.2s; font-size: 0.7rem; }
+    .sidebar-group-title.open .arrow { transform: rotate(90deg); }
+
+    /* Content */
+    .page { display: none; }
+    .page.active { display: block; }
+    h2 { font-size: 2rem; margin-bottom: 8px; color: var(--text); }
+    h3 { font-size: 1.4rem; margin: 32px 0 12px; color: var(--accent2); }
+    h4 { font-size: 1.1rem; margin: 24px 0 8px; color: var(--text); }
+    p { margin-bottom: 16px; color: var(--text2); }
+    .subtitle { font-size: 1.1rem; color: var(--text2); margin-bottom: 32px; }
+
+    /* Cards */
+    .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 16px; }
+    .card h4 { margin-top: 0; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin: 20px 0; }
+    .feature-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .feature-card .icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .feature-card h4 { margin: 0 0 8px; }
+    .feature-card p { margin: 0; font-size: 0.9rem; }
+
+    /* Code blocks */
+    .code-block { position: relative; background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; margin: 16px 0; overflow: hidden; }
+    .code-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); }
+    .code-header span { font-size: 0.8rem; color: var(--text2); }
+    .copy-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+    .copy-btn:hover { background: var(--accent); color: white; }
+    .code-block pre { padding: 16px; overflow-x: auto; font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.85rem; line-height: 1.5; }
+    code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.85rem; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    th { background: var(--bg3); color: var(--text); font-weight: 600; font-size: 0.85rem; }
+    td { color: var(--text2); font-size: 0.9rem; }
+
+    /* Badges */
+    .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .badge-purple { background: rgba(139,92,246,0.2); color: var(--accent2); }
+    .badge-green { background: rgba(52,211,153,0.2); color: var(--green); }
+    .badge-red { background: rgba(248,113,113,0.2); color: var(--red); }
+    .badge-blue { background: rgba(96,165,250,0.2); color: var(--blue); }
+
+    /* Alert boxes */
+    .alert { padding: 16px 20px; border-radius: 8px; margin: 16px 0; border-left: 4px solid; }
+    .alert-info { background: rgba(96,165,250,0.1); border-color: var(--blue); }
+    .alert-warning { background: rgba(251,191,36,0.1); border-color: var(--orange); }
+    .alert-danger { background: rgba(248,113,113,0.1); border-color: var(--red); }
+    .alert strong { color: var(--text); }
+
+    /* Lists */
+    ul, ol { margin: 12px 0; padding-left: 24px; }
+    li { margin: 6px 0; color: var(--text2); }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h1>⚡ nox dev</h1>
+        <p>Documentation v1.0</p>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-link active" onclick="showPage('home')">🏠 Home</div>
+        <div class="sidebar-link" onclick="showPage('getting-started')">🚀 Getting Started</div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">General</div>
+        <div class="sidebar-link" onclick="showPage('frameworks')">⚙️ Frameworks</div>
+        <div class="sidebar-link" onclick="showPage('locales')">🌍 Locales</div>
+        <div class="sidebar-link" onclick="showPage('fxap')">🔒 FxAP Protection</div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">💀 fatal_crash</div>
+        <div class="sidebar-link sub" onclick="showPage('fc-overview')">Overview</div>
+        <div class="sidebar-link sub" onclick="showPage('fc-install')">Installation</div>
+        <div class="sidebar-link sub" onclick="showPage('fc-config')">Configuration</div>
+        <div class="sidebar-link sub" onclick="showPage('fc-discord')">Discord Webhooks</div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">💀 death_wipe</div>
+        <div class="sidebar-link sub" onclick="showPage('dw-overview')">Overview</div>
+        <div class="sidebar-link sub" onclick="showPage('dw-install')">Installation</div>
+        <div class="sidebar-link sub" onclick="showPage('dw-config')">Configuration</div>
+        <div class="sidebar-link sub" onclick="showPage('dw-admin')">Admin Commands</div>
+        <div class="sidebar-link sub" onclick="showPage('dw-discord')">Discord Webhooks</div>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+      <!-- HOME -->
+      <div id="home" class="page active">
+        <h2>⚡ nox dev Documentation</h2>
+        <p class="subtitle">High-quality FiveM scripts with multi-framework support and 20 languages</p>
+
+        <div class="cards-grid">
+          <div class="feature-card">
+            <div class="icon">💀</div>
+            <h4>fatal_crash</h4>
+            <p>High-speed crashes with a 50/50 chance of death + full character wipe. Ultimate hardcore realism.</p>
+            <span class="badge badge-red">v4.0</span>
+          </div>
+          <div class="feature-card">
+            <div class="icon">☠️</div>
+            <h4>death_wipe</h4>
+            <p>Track player deaths and permanently wipe characters after reaching the configurable death limit.</p>
+            <span class="badge badge-purple">v4.0</span>
+          </div>
+        </div>
+
+        <h3>✨ Key Features</h3>
+        <div class="cards-grid">
+          <div class="feature-card">
+            <div class="icon">🔧</div>
+            <h4>Multi-Framework</h4>
+            <p>Auto-detects ESX, QBCore, QBox, VORPCore, and ND_Core. Zero configuration needed.</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">🌍</div>
+            <h4>20 Languages</h4>
+            <p>Pre-translated locale files. Easily add your own language or modify existing translations.</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">🔒</div>
+            <h4>FxAP Protected</h4>
+            <p>Core code is encrypted while config.lua and locales/ remain fully editable.</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">💬</div>
+            <h4>Discord Integration</h4>
+            <p>Rich webhook notifications with embeds for all critical events.</p>
+          </div>
+        </div>
+
+        <h3>🛡️ Supported Frameworks</h3>
+        <table>
+          <thead><tr><th>Framework</th><th>Status</th><th>Detection</th></tr></thead>
+          <tbody>
+            <tr><td>ESX (es_extended)</td><td><span class="badge badge-green">✅ Full Support</span></td><td>Automatic</td></tr>
+            <tr><td>QBCore</td><td><span class="badge badge-green">✅ Full Support</span></td><td>Automatic</td></tr>
+            <tr><td>QBox</td><td><span class="badge badge-green">✅ Full Support</span></td><td>Automatic</td></tr>
+            <tr><td>VORPCore</td><td><span class="badge badge-green">✅ Full Support</span></td><td>Automatic</td></tr>
+            <tr><td>ND_Core</td><td><span class="badge badge-green">✅ Full Support</span></td><td>Automatic</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- GETTING STARTED -->
+      <div id="getting-started" class="page">
+        <h2>🚀 Getting Started</h2>
+        <p class="subtitle">Get up and running with nox dev scripts in minutes</p>
+
+        <h3>Requirements</h3>
+        <ul>
+          <li>FiveM server with a supported framework (ESX, QBCore, QBox, VORPCore, or ND_Core)</li>
+          <li><strong>oxmysql</strong> — Required for all database operations</li>
+          <li>Discord webhook URL (optional, for notifications)</li>
+        </ul>
+
+        <h3>Quick Install</h3>
+        <div class="alert alert-info"><strong>Step 1:</strong> Download the script from your purchase platform</div>
+
+        <div class="code-block">
+          <div class="code-header"><span>Step 2: Extract to resources</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>resources/
+└── [nox]/
+    ├── fatal_crash/
+    │   ├── fxmanifest.lua
+    │   ├── config.lua
+    │   ├── client.lua
+    │   ├── server.lua
+    │   └── locales/
+    │       ├── _core.lua
+    │       ├── en.lua
+    │       ├── fr.lua
+    │       └── ... (20 languages)
+    └── death_wipe/
+        └── (same structure)</pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header"><span>Step 3: Add to server.cfg</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>ensure oxmysql
+ensure [nox]</pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header"><span>Step 4: Configure</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>-- Edit config.lua to set your preferences
+Config.Locale = 'en'  -- Change to your language (fr, es, de, etc.)
+-- Edit other settings as needed</pre>
+        </div>
+
+        <div class="alert alert-info"><strong>Step 5:</strong> Restart your server. Tables are created automatically!</div>
+      </div>
+
+      <!-- FRAMEWORKS -->
+      <div id="frameworks" class="page">
+        <h2>⚙️ Framework Support</h2>
+        <p class="subtitle">Automatic detection — no configuration required</p>
+
+        <p>All nox dev scripts automatically detect your framework on startup. The detection checks for specific resources in this order:</p>
+
+        <h3>Detection Order</h3>
+        <table>
+          <thead><tr><th>Priority</th><th>Framework</th><th>Detection Method</th><th>Tables Wiped</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><span class="badge badge-purple">QBCore / QBox</span></td><td><code>GetResourceState('qb-core')</code></td><td>players, player_*, bank_accounts, apartments, crypto</td></tr>
+            <tr><td>2</td><td><span class="badge badge-blue">ESX</span></td><td><code>GetResourceState('es_extended')</code></td><td>users, owned_vehicles, billing, society_*, datastore_data</td></tr>
+            <tr><td>3</td><td><span class="badge badge-green">VORPCore</span></td><td><code>GetResourceState('vorp_core')</code></td><td>characters, horses, inventories, vorp_*</td></tr>
+            <tr><td>4</td><td><span class="badge badge-red">ND_Core</span></td><td><code>GetResourceState('ND_Core')</code></td><td>nd_characters, nd_vehicles, nd_inventory</td></tr>
+          </tbody>
+        </table>
+
+        <h3>How It Works</h3>
+        <div class="card">
+          <p>On server startup, the script checks for each framework in order. When a match is found:</p>
+          <ol>
+            <li>The framework name is logged to the console</li>
+            <li>Framework-specific table lists are loaded for character wipes</li>
+            <li>Appropriate identifier extraction methods are configured</li>
+          </ol>
+        </div>
+
+        <div class="alert alert-warning"><strong>Note:</strong> If no framework is detected, the script will log a warning but continue running. Character wipes will not function without a detected framework.</div>
+      </div>
+
+      <!-- LOCALES -->
+      <div id="locales" class="page">
+        <h2>🌍 Locale System</h2>
+        <p class="subtitle">20 pre-translated languages with easy customization</p>
+
+        <h3>Supported Languages</h3>
+        <table>
+          <thead><tr><th>Code</th><th>Language</th><th>Code</th><th>Language</th></tr></thead>
+          <tbody>
+            <tr><td><code>en</code></td><td>English</td><td><code>nl</code></td><td>Nederlands</td></tr>
+            <tr><td><code>fr</code></td><td>Français</td><td><code>sv</code></td><td>Svenska</td></tr>
+            <tr><td><code>es</code></td><td>Español</td><td><code>da</code></td><td>Dansk</td></tr>
+            <tr><td><code>de</code></td><td>Deutsch</td><td><code>no</code></td><td>Norsk</td></tr>
+            <tr><td><code>pt</code></td><td>Português</td><td><code>cs</code></td><td>Čeština</td></tr>
+            <tr><td><code>it</code></td><td>Italiano</td><td><code>pl</code></td><td>Polski</td></tr>
+            <tr><td><code>tr</code></td><td>Türkçe</td><td><code>fi</code></td><td>Suomi</td></tr>
+            <tr><td><code>ru</code></td><td>Русский</td><td><code>ro</code></td><td>Română</td></tr>
+            <tr><td><code>ar</code></td><td>العربية</td><td><code>zh</code></td><td>中文</td></tr>
+            <tr><td><code>ko</code></td><td>한국어</td><td><code>ja</code></td><td>日本語</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Setting Your Language</h3>
+        <div class="code-block">
+          <div class="code-header"><span>config.lua</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>Config.Locale = 'fr'  -- Set to any supported language code</pre>
+        </div>
+
+        <h3>Adding a New Language</h3>
+        <div class="code-block">
+          <div class="code-header"><span>locales/xx.lua (your new language)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>Locales['xx'] = {
+    crash_detected = "Your translated text here",
+    player_died = "Player death message",
+    player_survived = "Survival message",
+    -- Copy all keys from en.lua and translate them
+}</pre>
+        </div>
+
+        <h3>How the L() Function Works</h3>
+        <div class="card">
+          <p>The <code>L(key)</code> function is used throughout the scripts to fetch translated strings:</p>
+          <ol>
+            <li>Checks for the key in the current locale (e.g., <code>Locales['fr']</code>)</li>
+            <li>Falls back to English (<code>Locales['en']</code>) if key not found</li>
+            <li>Returns the key name itself as last resort</li>
+          </ol>
+        </div>
+
+        <div class="alert alert-info"><strong>FxAP Compatible:</strong> All locale files are in the <code>escrow_ignore</code> list, so they remain editable even after FxAP protection.</div>
+      </div>
+
+      <!-- FXAP -->
+      <div id="fxap" class="page">
+        <h2>🔒 FxAP Protection</h2>
+        <p class="subtitle">Protect your code while keeping configs editable</p>
+
+        <h3>What is FxAP?</h3>
+        <p>FiveM Asset Protection (FxAP) encrypts your script's core logic (client.lua, server.lua) while allowing specific files to remain editable by the end user.</p>
+
+        <h3>Protected vs. Editable</h3>
+        <table>
+          <thead><tr><th>File</th><th>Status</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>client.lua</code></td><td><span class="badge badge-red">🔒 Encrypted</span></td><td>Client-side logic</td></tr>
+            <tr><td><code>server.lua</code></td><td><span class="badge badge-red">🔒 Encrypted</span></td><td>Server-side logic, wipe functions</td></tr>
+            <tr><td><code>config.lua</code></td><td><span class="badge badge-green">🔓 Editable</span></td><td>All configuration options</td></tr>
+            <tr><td><code>locales/*.lua</code></td><td><span class="badge badge-green">🔓 Editable</span></td><td>All 20 language files</td></tr>
+          </tbody>
+        </table>
+
+        <h3>fxmanifest.lua Setup</h3>
+        <div class="code-block">
+          <div class="code-header"><span>fxmanifest.lua</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>fx_version 'cerulean'
+game 'gta5'
+
+escrow_ignore {
+    'config.lua',
+    'locales/*.lua'
+}</pre>
+        </div>
+
+        <div class="alert alert-warning"><strong>For Developers:</strong> When you submit your script to FxAP, the files listed in <code>escrow_ignore</code> will remain unencrypted. Everything else gets encrypted automatically.</div>
+      </div>
+
+      <!-- FATAL_CRASH OVERVIEW -->
+      <div id="fc-overview" class="page">
+        <h2>💀 fatal_crash — Overview</h2>
+        <p class="subtitle">High-speed crash detection with character permadeath</p>
+        <span class="badge badge-red">v4.0</span>
+
+        <h3>What It Does</h3>
+        <p>fatal_crash monitors player vehicle speed. When a player crashes at high speed (default: 120 km/h), there's a <strong>50/50 chance</strong> to:</p>
+        <ul>
+          <li><strong>Survive:</strong> Player receives a notification that they survived</li>
+          <li><strong>Die + Wipe:</strong> Player dies AND their entire character is permanently deleted from the database</li>
+        </ul>
+
+        <div class="alert alert-danger"><strong>⚠️ EXTREME:</strong> This is a hardcore permadeath script. The character wipe is <strong>permanent and irreversible</strong>. The player must create a completely new character.</div>
+
+        <h3>How The Wipe Works</h3>
+        <div class="card">
+          <ol>
+            <li><strong>Crash Detection:</strong> Client detects sudden speed drop above threshold</li>
+            <li><strong>50/50 Roll:</strong> Server generates random outcome</li>
+            <li><strong>Kill Player:</strong> If unlucky, player health is set to 0</li>
+            <li><strong>Database Wipe:</strong> All character data deleted from framework-specific tables</li>
+            <li><strong>Mark Player:</strong> Player is recorded in <code>fatal_crash_wiped</code> tracking table</li>
+            <li><strong>Reconnect Protection:</strong> On next join, deferrals intercept and re-wipe any data the framework recreated</li>
+          </ol>
+        </div>
+
+        <h3>Features</h3>
+        <div class="cards-grid">
+          <div class="feature-card">
+            <div class="icon">🚗</div>
+            <h4>Speed Detection</h4>
+            <p>Configurable speed threshold with accurate crash detection algorithm</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">🎲</div>
+            <h4>50/50 Chance</h4>
+            <p>Fair random roll — survive or lose everything</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">🔄</div>
+            <h4>Mark & Re-wipe</h4>
+            <p>Prevents frameworks from restoring wiped data on reconnect</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">💬</div>
+            <h4>Discord Alerts</h4>
+            <p>Rich embed notifications for all crash events</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FATAL_CRASH INSTALL -->
+      <div id="fc-install" class="page">
+        <h2>📦 fatal_crash — Installation</h2>
+        <p class="subtitle">Quick setup guide</p>
+
+        <h3>Step 1: Extract Files</h3>
+        <div class="code-block">
+          <div class="code-header"><span>Resource folder structure</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>resources/[nox]/fatal_crash/
+├── fxmanifest.lua
+├── config.lua          ← Editable
+├── client.lua          ← Protected
+├── server.lua          ← Protected
+└── locales/            ← All editable
+    ├── _core.lua
+    ├── en.lua
+    ├── fr.lua
+    ├── es.lua
+    └── ... (20 files)</pre>
+        </div>
+
+        <h3>Step 2: Add to server.cfg</h3>
+        <div class="code-block">
+          <div class="code-header"><span>server.cfg</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>ensure oxmysql
+ensure fatal_crash</pre>
+        </div>
+
+        <h3>Step 3: Configure</h3>
+        <p>Edit <code>config.lua</code> to set your preferences (see Configuration page).</p>
+
+        <h3>Step 4: Start Server</h3>
+        <div class="alert alert-info"><strong>Auto-setup:</strong> The <code>fatal_crash_wiped</code> database table is created automatically on first start. No SQL needed!</div>
+
+        <p>You should see the nox dev ASCII banner in your console confirming the script loaded:</p>
+        <div class="code-block">
+          <div class="code-header"><span>Console output</span></div>
+          <pre> ███╗   ██╗ ██████╗ ██╗  ██╗    ██████╗ ███████╗██╗   ██╗
+ ████╗  ██║██╔═══██╗╚██╗██╔╝    ██╔══██╗██╔════╝██║   ██║
+ ██╔██╗ ██║██║   ██║ ╚███╔╝     ██║  ██║█████╗  ██║   ██║
+ ██║╚██╗██║██║   ██║ ██╔██╗     ██║  ██║██╔══╝  ╚██╗ ██╔╝
+ ██║ ╚████║╚██████╔╝██╔╝ ██╗   ██████╔╝███████╗ ╚████╔╝
+ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝   ╚═════╝ ╚══════╝  ╚═══╝
+  fatal_crash v4.0 | by nox dev</pre>
+        </div>
+      </div>
+
+      <!-- FATAL_CRASH CONFIG -->
+      <div id="fc-config" class="page">
+        <h2>⚙️ fatal_crash — Configuration</h2>
+        <p class="subtitle">All options in config.lua</p>
+
+        <div class="code-block">
+          <div class="code-header"><span>config.lua</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>Config = {}
+
+-- Language setting (see locales/ folder for available languages)
+Config.Locale = 'en'
+
+-- Minimum speed in km/h to trigger crash detection
+Config.SpeedThreshold = 120
+
+-- Discord webhook URL for notifications
+Config.DiscordWebhook = ''
+
+-- Discord embed settings
+Config.BotName = 'fatal_crash'
+Config.BotAvatar = ''
+
+-- Enable/disable specific notifications
+Config.NotifyCrash = true      -- When a crash is detected
+Config.NotifyDeath = true      -- When player dies + gets wiped
+Config.NotifySurvival = true   -- When player survives</pre>
+        </div>
+
+        <h3>Configuration Options</h3>
+        <table>
+          <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>Config.Locale</code></td><td>string</td><td><code>'en'</code></td><td>Language code for all messages</td></tr>
+            <tr><td><code>Config.SpeedThreshold</code></td><td>number</td><td><code>120</code></td><td>Minimum crash speed in km/h</td></tr>
+            <tr><td><code>Config.DiscordWebhook</code></td><td>string</td><td><code>''</code></td><td>Discord webhook URL</td></tr>
+            <tr><td><code>Config.BotName</code></td><td>string</td><td><code>'fatal_crash'</code></td><td>Discord bot display name</td></tr>
+            <tr><td><code>Config.NotifyCrash</code></td><td>boolean</td><td><code>true</code></td><td>Send crash detection alerts</td></tr>
+            <tr><td><code>Config.NotifyDeath</code></td><td>boolean</td><td><code>true</code></td><td>Send death+wipe alerts</td></tr>
+            <tr><td><code>Config.NotifySurvival</code></td><td>boolean</td><td><code>true</code></td><td>Send survival alerts</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- FATAL_CRASH DISCORD -->
+      <div id="fc-discord" class="page">
+        <h2>💬 fatal_crash — Discord Webhooks</h2>
+        <p class="subtitle">Real-time crash notifications to your Discord server</p>
+
+        <h3>Setup</h3>
+        <ol>
+          <li>Open Discord → Server Settings → Integrations → Webhooks</li>
+          <li>Click <strong>New Webhook</strong>, name it, select a channel</li>
+          <li>Copy the webhook URL</li>
+          <li>Paste it in <code>config.lua</code>:</li>
+        </ol>
+        <div class="code-block">
+          <div class="code-header"><span>config.lua</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>Config.DiscordWebhook = 'https://discord.com/api/webhooks/YOUR_WEBHOOK_URL'</pre>
+        </div>
+
+        <h3>Notification Types</h3>
+        <table>
+          <thead><tr><th>Event</th><th>Color</th><th>Info Included</th></tr></thead>
+          <tbody>
+            <tr><td>🚗 Crash Detected</td><td><span class="badge badge-orange" style="background:rgba(251,191,36,0.2);color:#fbbf24;">Orange</span></td><td>Player name, speed, vehicle</td></tr>
+            <tr><td>💀 Death + Wipe</td><td><span class="badge badge-red">Red</span></td><td>Player name, identifier, framework, tables wiped</td></tr>
+            <tr><td>✅ Survival</td><td><span class="badge badge-green">Green</span></td><td>Player name, speed, vehicle</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- DEATH_WIPE OVERVIEW -->
+      <div id="dw-overview" class="page">
+        <h2>☠️ death_wipe — Overview</h2>
+        <p class="subtitle">Death counter with permanent character wipe</p>
+        <span class="badge badge-purple">v4.0</span>
+
+        <h3>What It Does</h3>
+        <p>death_wipe tracks every player death. After reaching a configurable number of deaths (default: 5), the player's character is <strong>permanently wiped</strong> from the database.</p>
+
+        <h3>How It Works</h3>
+        <div class="card">
+          <ol>
+            <li><strong>Player Dies:</strong> Death count increments by 1</li>
+            <li><strong>Counter Display:</strong> Player sees "Death X/5" notification</li>
+            <li><strong>Threshold Reached:</strong> When deaths reach the limit, character is fully wiped</li>
+            <li><strong>Mark & Track:</strong> Player stored in <code>death_wipe_marked</code> table</li>
+            <li><strong>Reconnect Protection:</strong> Framework-recreated data is re-wiped on next join</li>
+          </ol>
+        </div>
+
+        <h3>Features</h3>
+        <div class="cards-grid">
+          <div class="feature-card">
+            <div class="icon">🔢</div>
+            <h4>Death Counter</h4>
+            <p>Persistent counter stored in database, survives restarts</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">⚙️</div>
+            <h4>Configurable Limit</h4>
+            <p>Set any number of deaths before wipe (default: 5)</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">👮</div>
+            <h4>Admin Commands</h4>
+            <p>Check, set, and reset death counts for any player</p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">💬</div>
+            <h4>Discord Alerts</h4>
+            <p>Notifications for every death and wipe event</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEATH_WIPE INSTALL -->
+      <div id="dw-install" class="page">
+        <h2>📦 death_wipe — Installation</h2>
+        <p class="subtitle">Quick setup guide</p>
+
+        <h3>Step 1: Extract Files</h3>
+        <div class="code-block">
+          <div class="code-header"><span>Resource folder structure</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>resources/[nox]/death_wipe/
+├── fxmanifest.lua
+├── config.lua          ← Editable
+├── client.lua          ← Protected
+├── server.lua          ← Protected
+└── locales/            ← All editable
+    ├── _core.lua
+    ├── en.lua
+    ├── fr.lua
+    ├── es.lua
+    └── ... (20 files)</pre>
+        </div>
+
+        <h3>Step 2: Add to server.cfg</h3>
+        <div class="code-block">
+          <div class="code-header"><span>server.cfg</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>ensure oxmysql
+ensure death_wipe</pre>
+        </div>
+
+        <h3>Step 3: Configure & Start</h3>
+        <p>Edit <code>config.lua</code>, then restart your server. Database tables are created automatically.</p>
+
+        <div class="code-block">
+          <div class="code-header"><span>Console output</span></div>
+          <pre> ███╗   ██╗ ██████╗ ██╗  ██╗    ██████╗ ███████╗██╗   ██╗
+ ████╗  ██║██╔═══██╗╚██╗██╔╝    ██╔══██╗██╔════╝██║   ██║
+ ██╔██╗ ██║██║   ██║ ╚███╔╝     ██║  ██║█████╗  ██║   ██║
+ ██║╚██╗██║██║   ██║ ██╔██╗     ██║  ██║██╔══╝  ╚██╗ ██╔╝
+ ██║ ╚████║╚██████╔╝██╔╝ ██╗   ██████╔╝███████╗ ╚████╔╝
+ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝   ╚═════╝ ╚══════╝  ╚═══╝
+  death_wipe v4.0 | by nox dev</pre>
+        </div>
+      </div>
+
+      <!-- DEATH_WIPE CONFIG -->
+      <div id="dw-config" class="page">
+        <h2>⚙️ death_wipe — Configuration</h2>
+        <p class="subtitle">All options in config.lua</p>
+
+        <div class="code-block">
+          <div class="code-header"><span>config.lua</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>Config = {}
+
+-- Language setting
+Config.Locale = 'en'
+
+-- Number of deaths before character wipe
+Config.MaxDeaths = 5
+
+-- Discord webhook URL
+Config.DiscordWebhook = ''
+
+-- Discord embed settings
+Config.BotName = 'death_wipe'
+Config.BotAvatar = ''
+
+-- Notification toggles
+Config.NotifyDeath = true      -- Each death increment
+Config.NotifyWipe = true       -- When a character gets wiped</pre>
+        </div>
+
+        <h3>Configuration Options</h3>
+        <table>
+          <thead><tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>Config.Locale</code></td><td>string</td><td><code>'en'</code></td><td>Language code</td></tr>
+            <tr><td><code>Config.MaxDeaths</code></td><td>number</td><td><code>5</code></td><td>Deaths before wipe</td></tr>
+            <tr><td><code>Config.DiscordWebhook</code></td><td>string</td><td><code>''</code></td><td>Discord webhook URL</td></tr>
+            <tr><td><code>Config.BotName</code></td><td>string</td><td><code>'death_wipe'</code></td><td>Discord bot name</td></tr>
+            <tr><td><code>Config.NotifyDeath</code></td><td>boolean</td><td><code>true</code></td><td>Notify on each death</td></tr>
+            <tr><td><code>Config.NotifyWipe</code></td><td>boolean</td><td><code>true</code></td><td>Notify on character wipe</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- DEATH_WIPE ADMIN -->
+      <div id="dw-admin" class="page">
+        <h2>👮 death_wipe — Admin Commands</h2>
+        <p class="subtitle">Manage player death counts in-game</p>
+
+        <h3>Available Commands</h3>
+        <table>
+          <thead><tr><th>Command</th><th>Permission</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>/deathcount [id]</code></td><td>Admin</td><td>Check a player's current death count</td></tr>
+            <tr><td><code>/setdeaths [id] [count]</code></td><td>Admin</td><td>Set a player's death count to a specific value</td></tr>
+            <tr><td><code>/resetdeaths [id]</code></td><td>Admin</td><td>Reset a player's death count to 0</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Usage Examples</h3>
+        <div class="code-block">
+          <div class="code-header"><span>In-game commands</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>-- Check player ID 3's death count
+/deathcount 3
+
+-- Set player ID 3 to 2 deaths
+/setdeaths 3 2
+
+-- Reset player ID 3 back to 0
+/resetdeaths 3</pre>
+        </div>
+
+        <div class="alert alert-info"><strong>Permissions:</strong> Admin commands use your framework's built-in permission system (ACE permissions for ESX, admin groups for QBCore, etc.)</div>
+      </div>
+
+      <!-- DEATH_WIPE DISCORD -->
+      <div id="dw-discord" class="page">
+        <h2>💬 death_wipe — Discord Webhooks</h2>
+        <p class="subtitle">Track every death and wipe on Discord</p>
+
+        <h3>Setup</h3>
+        <ol>
+          <li>Create a webhook in your Discord server</li>
+          <li>Paste the URL in <code>config.lua</code>:</li>
+        </ol>
+        <div class="code-block">
+          <div class="code-header"><span>config.lua</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>Config.DiscordWebhook = 'https://discord.com/api/webhooks/YOUR_WEBHOOK_URL'</pre>
+        </div>
+
+        <h3>Notification Types</h3>
+        <table>
+          <thead><tr><th>Event</th><th>Color</th><th>Info Included</th></tr></thead>
+          <tbody>
+            <tr><td>💀 Player Death</td><td><span class="badge badge-orange" style="background:rgba(251,191,36,0.2);color:#fbbf24;">Orange</span></td><td>Player name, current count, remaining lives</td></tr>
+            <tr><td>☠️ Character Wiped</td><td><span class="badge badge-red">Red</span></td><td>Player name, identifier, framework, total deaths</td></tr>
+          </tbody>
+        </table>
+
+        <div class="alert alert-info"><strong>Tip:</strong> Create separate webhooks for fatal_crash and death_wipe to keep your Discord channels organized.</div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    function showPage(id) {
+      // Hide all pages
+      document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+      // Show selected
+      var page = document.getElementById(id);
+      if (page) page.classList.add('active');
+      // Update sidebar active link
+      document.querySelectorAll('.sidebar-link').forEach(function(link) { link.classList.remove('active'); });
+      event.target.classList.add('active');
+      // Scroll to top
+      window.scrollTo(0, 0);
+    }
+
+    function copyCode(btn) {
+      var pre = btn.closest('.code-block').querySelector('pre');
+      navigator.clipboard.writeText(pre.textContent).then(function() {
+        btn.textContent = '✓ Copied!';
+        setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
